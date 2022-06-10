@@ -2,114 +2,144 @@ package com.e.five_recipes.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.e.five_recipes.R
-import com.e.five_recipes.models.Ingredient
-import com.e.five_recipes.models.Recipe
-import com.e.five_recipes.ui.components.RecipeCard
+import com.e.five_recipes.ui.bottomNav.BottomNavItem
+import com.e.five_recipes.ui.components.FavouritesList
+import com.e.five_recipes.ui.components.RecipesList
+import com.e.five_recipes.ui.theme.DarkGreen
 
-val recipes: List<Recipe> = listOf(
-    Recipe(
-        "1", "recept1", "kratki opis je ovo he he heh eh he", "path",
-        listOf(
-            Ingredient("id", "Mlijeko", 2.0, "dl"),
-            Ingredient("id1", "Mlijeko", 2.0, "dl"),
-            Ingredient("id2", "Mlijeko", 2.0, "dl")
-        ),
-        listOf("Step1", "step2")
-    ),
-    Recipe(
-        "2", "recept1", "kratki opis je ovo he he heh eh he", "path",
-        listOf(
-            Ingredient("id", "Mlijeko", 2.0, "dl"),
-            Ingredient("id1", "Mlijeko", 2.0, "dl"),
-            Ingredient("id2", "Mlijeko", 2.0, "dl")
-        ),
-        listOf("Step1", "step2")
-    ),
-    Recipe(
-        "3", "recept1", "kratki opis je ovo he he heh eh he", "path",
-        listOf(
-            Ingredient("id", "Mlijeko", 2.0, "dl"),
-            Ingredient("id1", "Mlijeko", 2.0, "dl"),
-            Ingredient("id2", "Mlijeko", 2.0, "dl")
-        ),
-        listOf("Step1", "step2")
-    ),
-    Recipe(
-        "4", "recept1", "kratki opis je ovo he he heh eh he", "path",
-        listOf(
-            Ingredient("id", "Mlijeko", 2.0, "dl"),
-            Ingredient("id1", "Mlijeko", 2.0, "dl"),
-            Ingredient("id2", "Mlijeko", 2.0, "dl")
-        ),
-        listOf("Step1", "step2")
-    ),
-    Recipe(
-        "5", "recept1", "kratki opis je ovo he he heh eh he", "path",
-        listOf(
-            Ingredient("id", "Mlijeko", 2.0, "dl"),
-            Ingredient("id1", "Mlijeko", 2.0, "dl"),
-            Ingredient("id2", "Mlijeko", 2.0, "dl")
-        ),
-        listOf("Step1", "step2")
-    )
-)
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    navigateToDetails: (Int) -> Unit
+    navigateToDetails: (id: String) -> Unit
 ) {
+    val navController = rememberNavController() // nav controller for recipes list and favourites
 
     Scaffold(
-        topBar ={
-            Box{
+        topBar = {
+            Box(
                 Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .background(),
+                    .background(DarkGreen),
                 contentAlignment = Alignment.Center
-                ) {
+            ) {
                 Image(
-                    painter = painterResource(id = androidx.compose.foundation.layout.R.drawable.logo),
+                    painter = painterResource(id = R.drawable.logo),
                     contentDescription = "App logo",
                     Modifier
-                        .height(34.dp)
-                        .width(136.dp)
+                        .padding(5.dp)
+                        .height(36.dp)
+
                 )
             }
-            }
+        },
+        bottomBar = { BottomNavigation(navController = navController) }
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            HomeNavigationGraph(
+                navController = navController,
+                navigateToDetails = navigateToDetails,
+            )
         }
-    ) {
-
     }
-    
+
 
 }
 
+@Composable
+fun BottomNavigation(navController: NavController) {
+    val items = listOf(
+        BottomNavItem.Home,
+        BottomNavItem.MyRecipes,
+        BottomNavItem.Favourites
+
+    )
+
+    BottomNavigation(
+        contentColor = Color.Green,
+        backgroundColor = Color.White,
+        elevation = 10.dp
+    ) {
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentRoute = navBackStackEntry?.destination?.route
+        items.forEach { screen ->
+            BottomNavigationItem(
+                selected = currentRoute == screen.screen_route,
+                selectedContentColor = DarkGreen,
+                unselectedContentColor = Color.DarkGray.copy(0.4f),
+                icon = {
+                    Image(
+                        painter = if (currentRoute == screen.screen_route) painterResource(id = screen.selectedIcon) else painterResource(
+                            screen.unselectedIcon
+                        ),
+                        contentDescription = null
+                    )
+//                    Icon(
+//                        imageVector = if (currentRoute == screen.screen_route) (id = screen.selectedIcon ) else painterResource(screen.unselectedIcon),
+//                        contentDescription = screen.title
+//                    )
+                },
+                label = {
+                    Text(
+                        text = screen.title,
+                        fontSize = 8.sp
+                    )
+                },
+                alwaysShowLabel = true,
+                onClick = {
+                    navController.navigate(screen.screen_route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun HomeNavigationGraph(
+    navController: NavHostController,
+    navigateToDetails: (String) -> Unit,
+) {
+    NavHost(navController, startDestination = BottomNavItem.Home.screen_route) {
+        composable(BottomNavItem.Home.screen_route) {
+            RecipesList(navigateToDetails)
+        }
+        composable(BottomNavItem.Favourites.screen_route) {
+            FavouritesList(navigateToDetails)
+        }
+
+        composable(BottomNavItem.MyRecipes.screen_route) {
+            MyRecipesScreen(navigateToDetails)
+        }
+
+    }
+}
 
 
-//LazyColumn {
-//    items(recipes) { recipe ->
-//        RecipeCard(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(dimensionResource(R.dimen.card_margin))
-//                .border(dimensionResource(R.dimen.card_border_width), Color.Red)
-//                .height(dimensionResource(R.dimen.card_image_height)),
-//            recipe = recipe
-//        )
-//    }
-//}

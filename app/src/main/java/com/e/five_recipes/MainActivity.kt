@@ -1,44 +1,49 @@
 package com.e.five_recipes
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.e.five_recipes.models.Ingredient
-import com.e.five_recipes.models.Recipe
-import com.e.five_recipes.ui.screens.HomeScreen
+import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
+import com.e.five_recipes.ui.components.CircleAnimation
+import com.e.five_recipes.ui.components.ShowAlertDialog
+import com.e.five_recipes.ui.screens.MainNavigationGraph
 import com.e.five_recipes.ui.theme.FiveRecipesTheme
+import com.e.five_recipes.ui.theme.Purple500
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContent {
+            val navController = rememberNavController() // main screen controller
+
+            fun navigateToDetails(id: String) {
+                Log.i("RECEPT: ", "UNUTRA FJE: $id")
+                navController.navigate("details/${id}")
+            }
+
+            fun navigateToCalculator(id: String) {
+                navController.navigate("calculator/${id}")
+            }
             FiveRecipesTheme {
-
-                val recipe = Recipe(
-                    1, "recept1", "kratki opis je ovo he he heh eh he", "path",
-                    listOf(
-                        Ingredient("id", "Mlijeko", 2.0, "dl"),
-                        Ingredient("id1", "Mlijeko", 2.0, "dl"),
-                        Ingredient("id2", "Mlijeko", 2.0, "dl")
-                    ),
-                    listOf("Step1", "step2")
-                )
-
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    HomeScreen(modifier = Modifier)
-                    //RecipeDetails(recipe = recipe)
-                }
+                MainNavigationGraph(navController, ::navigateToDetails, ::navigateToCalculator)
+                //BottomSheet()
+                //CallAlertDialog()
+                //CircleAnimation()
             }
         }
     }
@@ -56,3 +61,5 @@ fun DefaultPreview() {
         Greeting("Android")
     }
 }
+
+

@@ -6,30 +6,42 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.e.five_recipes.ui.bottomNav.BottomNavItem
 import com.e.five_recipes.ui.components.RecipeDetails
 
 
 @Composable
-fun MainNavigationGraph() {
-    val navController = rememberNavController() // main screen controller
+fun MainNavigationGraph(
+    navController: NavHostController,
+    navigateToDetails: (String) -> Unit,
+    navigateToCalculator: (String) -> Unit
+) {
+//BottomNavItem.Home.screen_route
+    NavHost(navController, startDestination = "splash_screen") {
+        composable("splash_screen"){
+            AnimatedSplashScreen(navController)
+        }
 
-    fun navigateToDetails(id: Int?) {
-        navController.navigate("details/${id}")
-    }
-
-    NavHost(navController, startDestination = BottomNavItem.Home.screen_route) {
         composable(BottomNavItem.Home.screen_route) {
-            HomeScreen(Modifier, ::navigateToDetails)
+            HomeScreen(modifier = Modifier, navigateToDetails)
         }
 
         composable(
             "details/{recipeId}",
             arguments = listOf(navArgument("recipeId") { type = NavType.StringType })
         ) { navBackStackEntry ->
-            RecipeDetails(recipeId = navBackStackEntry.arguments?.getString("recipeId")!!)
+            RecipeDetails(
+                recipeId = navBackStackEntry.arguments?.getString("recipeId")!!,
+                navigateToCalculator = navigateToCalculator
+            )
+        }
+
+        composable(
+            "calculator/{recipeId}",
+            arguments = listOf(navArgument("recipeId") { type = NavType.StringType })
+        ) { navBackStackEntry ->
+            CalculatorScreen(recipeId = navBackStackEntry.arguments?.getString("recipeId")!!)
         }
     }
 }

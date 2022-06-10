@@ -1,6 +1,26 @@
 <resources>
-    <string name="app_name">Five-Recipes</string>
-    <string name="label_ingredients">Sastojci</string>
-    <string name="label_summary">Kratki opis</string>
-    <string name="label_steps">Postupak</string>
+    <string name="app_name">Deputy Chef</string>
+    <string name="label_ingredients">Ingredients</string>
+    <string name="label_summary">Summary</string>
+    <string name="label_steps">Steps</string>
+    <string name="label_calculator">Calculator</string>
+    <string name="label_original">Original</string>
+    <string name="label_ingred_calculator">Ingredients calculator</string>
+    <string name="label_amount">Ingredient amount</string>
+    <string name="label_calculate">Calculate</string>
+    <string name="label_calculated_ingred">Calculated ingredients</string>
+    <string name="label_choose_ingred">Choose an ingredient</string>
+    <string name="title_create_recipe">Create new recipe</string>
+    <string name="placeholder_name">Name</string>
+    <string name="placeholder_summary">Summary</string>
+    <string name="placeholder_amount">Amount</string>
+    <string name="placeholder_unit">Unit</string>
+    <string name="label_step">Step</string>
+    <string name="button_save_recipe">Save recipe</string>
+    <string name="label_timer_name">Timer name</string>
+    <string name="label_set_timer">Set timer</string>
+    <string name="label_minutes">m</string>
+    <string name="label_seconds">s</string>
+    <string name="button_timer">Timer</string>
+    <string name="button_timer_start">Start</string>
 </resources>
