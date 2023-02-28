@@ -23,4 +23,8 @@
     <string name="label_seconds">s</string>
     <string name="button_timer">Timer</string>
     <string name="button_timer_start">Start</string>
+    <string name="recipe_title_label">Recipe title</string>
+    <string name="label_ingredient_name">Name</string>
+    <string name="label_ingredient_amount">Amount</string>
+    <string name="label_ingredient_unit">Unit</string>
 </resources>

@@ -1,200 +1,115 @@
 package com.e.five_recipes.ui.components
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.e.five_recipes.R
 import com.e.five_recipes.models.Ingredient
 
 
 @Composable
-fun CreateRecipeForm(
-
-) {
-    var ingredientFieldCount by remember { mutableStateOf(1) }
-    var steps by remember { mutableStateOf(listOf<String>()) }
-
-    var ingredients by remember { mutableStateOf(listOf<Ingredient>()) }
-
-    var name by remember { mutableStateOf("") }
-    var summary by remember { mutableStateOf("") }
-    var step by remember { mutableStateOf("") }
-
-
-    Column {
-        Text(text = stringResource(R.string.title_create_recipe))
-
-        //recipe name
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = name,
-            placeholder = { Text(stringResource(R.string.placeholder_name)) },
-            label = { Text(stringResource(R.string.placeholder_name)) },
-            onValueChange = {
-                name = it
-            }
-        )
-
-        //recipe summary
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = summary,
-            placeholder = { Text(stringResource(R.string.placeholder_summary)) },
-            label = { Text(stringResource(R.string.placeholder_summary)) },
-            onValueChange = {
-                summary = it
-            }
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        //IngredientInputBar()
-        Spacer(modifier = Modifier.height(10.dp))
-        StepInputBar()
-
-        Button(
-            onClick = {
-                //TODO:
-            }
-        ) {
-            Text(text = "Add")
-        }
-
-
-
-
-    }
-}
-
-
-@Composable
-fun IngredientInputBar(
-    modifier: Modifier = Modifier,
-    ingredients: List<Ingredient>
-) {
-    var name by remember { mutableStateOf("") }
-    var amount by remember { mutableStateOf("") }
-    var unit by remember { mutableStateOf("") }
-
+fun NewRecipeScreen() {
+    // Declare a list of ingredients
+    var title by remember { mutableStateOf("") }
+    val ingredients = remember { mutableStateListOf(IngredientObj()) }
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.padding(16.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 5.dp, end = 5.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-
-        ) {
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1.5f),
-                value = name,
-                placeholder = { Text(stringResource(R.string.placeholder_name)) },
-                label = { Text(stringResource(R.string.placeholder_name)) },
-                onValueChange = {
-                    name = it
-                }
-            )
-
-            Spacer(modifier = Modifier.width(5.dp))
-
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                value = amount,
-                placeholder = { Text(stringResource(R.string.placeholder_amount)) },
-                label = { Text(stringResource(R.string.placeholder_amount)) },
-                onValueChange = {
-                    amount = it
-                }
-            )
-            Spacer(modifier = Modifier.width(5.dp))
-
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                value = unit,
-                placeholder = { Text(stringResource(R.string.placeholder_unit)) },
-                label = { Text(stringResource(R.string.placeholder_unit)) },
-                onValueChange = {
-                    unit = it
-                }
-            )
+        
+        TextField(
+            value = title,
+            onValueChange = {newTitle -> title = newTitle},
+            label = { Text(stringResource(R.string.recipe_title_label)) }
+        )
+        
+        // Display the list of ingredients using a LazyColumn
+        LazyColumn {
+            items(ingredients) { ingredient ->
+                IngredientInput(
+                    ingredient = ingredient,
+                    onIngredientChanged = { newIngredient ->
+                        // Update the ingredient in the list when the text is changed
+                        val index = ingredients.indexOf(ingredient)
+                        ingredients[index] = newIngredient
+                    },
+                    onDeleteClicked = {
+                        // Remove the ingredient from the list when the delete button is clicked
+                        ingredients.remove(ingredient)
+                    }
+                )
+            }
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
-
+        // Add a button to dynamically add new ingredients
         Button(
-            onClick = {
-                //TODO: add ingredient to list
-            }) {
-            Text(text = "Add ingredient")
+            onClick = { ingredients.add(IngredientObj()) },
+            modifier = Modifier.padding(top = 16.dp)
+        ) {
+            Text("Add ingredient")
         }
     }
 }
 
 @Composable
-fun StepInputBar(
-    modifier: Modifier = Modifier
+fun IngredientInput(
+    ingredient: IngredientObj,
+    onIngredientChanged: (IngredientObj) -> Unit,
+    onDeleteClicked: () -> Unit
 ) {
-    var step by remember { mutableStateOf("") }
-    var counter by remember { mutableStateOf(0) }
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+    Row(
+        modifier = Modifier.padding(top = 8.dp),
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 5.dp, end = 5.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+        TextField(
+            value = ingredient.name,
+            onValueChange = { newName ->
+                onIngredientChanged(ingredient.copy(name = newName))
+            },
+            label = { Text(stringResource(R.string.label_ingredient_name)) },
+            modifier = Modifier.weight(1f)
+        )
 
+        TextField(
+            value = ingredient.amount,
+            onValueChange = { newAmount ->
+                onIngredientChanged(ingredient.copy(amount = newAmount))
+            },
+            label = { Text(stringResource(R.string.label_ingredient_amount)) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier.weight(1f)
+        )
+
+        TextField(
+            value = ingredient.unit,
+            onValueChange = { newUnit ->
+                onIngredientChanged(ingredient.copy(unit = newUnit))
+            },
+            label = { Text(stringResource(R.string.label_ingredient_unit)) },
+            modifier = Modifier.weight(1f)
+        )
+
+        // Add a delete button to remove the ingredient
+        IconButton(
+            onClick = onDeleteClicked,
+            modifier = Modifier.padding(start = 8.dp)
         ) {
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1.5f),
-                value = step,
-                placeholder = { Text(stringResource(R.string.label_step)) },
-                label = { Text(stringResource(R.string.label_step)) },
-                onValueChange = {
-                    step = it
-                }
-            )
-        }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Button(
-            onClick = {
-                //TODO: add step to list
-                counter++
-            }) {
-            Text(text = "Add step")
-        }
-
-        repeat(counter) {
-            Text(text = "TEST")
+            Icon(Icons.Filled.Delete, contentDescription = "Delete")
         }
     }
-
-
 }
 
-
-@Composable
-fun IngredientsList(
-    ingredients: List<Ingredient>
-) {
-    IngredientsBox(ingredients = ingredients)
-}
+data class IngredientObj(
+    var name: String = "",
+    var amount: String = "",
+    var unit: String = ""
+)

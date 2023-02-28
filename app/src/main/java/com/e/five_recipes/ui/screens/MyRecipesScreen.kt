@@ -53,10 +53,6 @@ fun MyRecipesScreen(
                     style = MaterialTheme.typography.h2,
                     color = Color.Gray
                 )
-
-
             }
         })
-
-
 }

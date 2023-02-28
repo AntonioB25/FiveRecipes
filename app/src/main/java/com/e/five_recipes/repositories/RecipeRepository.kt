@@ -61,9 +61,7 @@ internal class RecipeRepositoryImpl(
         val ingredients = recipe.ingredients
         val steps = recipe.steps
 
-        Log.i("RECIPE", "RECEPTID: " + recipe.id)
-        // Log.i("RECIPE", recipe.toDbRecipe().toString())
-        Log.i("RECIPE", "INGREDIENTS SIZE: " + ingredients.size)
+        Log.i("RECIPE", "Added recipe to favorites with id: " + recipe.id)
 
         recipeDao.insertRecipe(recipe.toDbRecipe(true))     //insert recipe
 
@@ -74,7 +72,6 @@ internal class RecipeRepositoryImpl(
         steps.forEach {
             recipeDao.insertStep(DbStep(0, it))
         }
-
     }
 
     override fun checkIfFavourite(recipeId: String) =

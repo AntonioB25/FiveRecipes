@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.e.five_recipes.ui.components.CircleAnimation
+import com.e.five_recipes.ui.components.NewRecipeScreen
 import com.e.five_recipes.ui.components.ShowAlertDialog
 import com.e.five_recipes.ui.screens.MainNavigationGraph
 import com.e.five_recipes.ui.theme.FiveRecipesTheme
@@ -32,7 +33,6 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController() // main screen controller
 
             fun navigateToDetails(id: String) {
-                Log.i("RECEPT: ", "UNUTRA FJE: $id")
                 navController.navigate("details/${id}")
             }
 
@@ -41,9 +41,8 @@ class MainActivity : ComponentActivity() {
             }
             FiveRecipesTheme {
                 MainNavigationGraph(navController, ::navigateToDetails, ::navigateToCalculator)
-                //BottomSheet()
                 //CallAlertDialog()
-                //CircleAnimation()
+                //NewRecipeScreen()
             }
         }
     }
