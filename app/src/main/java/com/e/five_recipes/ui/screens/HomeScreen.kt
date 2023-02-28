@@ -51,7 +51,6 @@ fun HomeScreen(
                     Modifier
                         .padding(5.dp)
                         .height(36.dp)
-
                 )
             }
         },
@@ -64,8 +63,6 @@ fun HomeScreen(
             )
         }
     }
-
-
 }
 
 @Composable
@@ -74,7 +71,6 @@ fun BottomNavigation(navController: NavController) {
         BottomNavItem.Home,
         BottomNavItem.MyRecipes,
         BottomNavItem.Favourites
-
     )
 
     BottomNavigation(
@@ -96,10 +92,6 @@ fun BottomNavigation(navController: NavController) {
                         ),
                         contentDescription = null
                     )
-//                    Icon(
-//                        imageVector = if (currentRoute == screen.screen_route) (id = screen.selectedIcon ) else painterResource(screen.unselectedIcon),
-//                        contentDescription = screen.title
-//                    )
                 },
                 label = {
                     Text(
@@ -134,7 +126,6 @@ fun HomeNavigationGraph(
         composable(BottomNavItem.Favourites.screen_route) {
             FavouritesList(navigateToDetails)
         }
-
         composable(BottomNavItem.MyRecipes.screen_route) {
             MyRecipesScreen(navigateToDetails)
         }

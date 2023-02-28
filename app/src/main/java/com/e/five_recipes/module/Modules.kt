@@ -20,7 +20,7 @@ val viewModelsModule = module {
         CalculatorViewModel()
     }
     viewModel {
-        RecipesViewModel(get())
+        RecipesViewModel(get(), androidContext())
     }
     viewModel {
         RecipeDetailsViewModel()

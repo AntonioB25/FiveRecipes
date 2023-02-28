@@ -37,7 +37,7 @@ class CalculatorViewModel : ViewModel() {
             originalIngredients.first { it.name.lowercase() == sastojak?.name?.lowercase() }.quantity
         val coef = userValue / originalValue
 
-        var newList = emptyList<Ingredient>().toMutableList();
+        val newList = emptyList<Ingredient>().toMutableList();
 
         for (ingredient in originalIngredients) {
             newList.add(
@@ -55,6 +55,4 @@ class CalculatorViewModel : ViewModel() {
         }
         return newList
     }
-
-
 }
